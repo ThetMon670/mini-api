@@ -1,0 +1,2131 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "Laravel",
+        "version": "0.0.1"
+    },
+    "servers": [
+        {
+            "url": "http://localhost/api"
+        }
+    ],
+    "security": [
+        {
+            "http": []
+        }
+    ],
+    "paths": {
+        "/register": {
+            "post": {
+                "operationId": "register",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Successfully register"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "token",
+                                                "user",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "operationId": "login",
+                "tags": [
+                    "Auth"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "user": {
+                                                    "type": "string"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Successfully Login"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "token",
+                                                "user",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Invalid credentials"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "operationId": "categories.index",
+                "summary": "List categories with search, sort, and pagination",
+                "tags": [
+                    "Category"
+                ],
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort",
+                        "schema": {
+                            "type": "string",
+                            "default": "id"
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "asc"
+                        }
+                    },
+                    {
+                        "name": "all",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": false
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return wrapped response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {},
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Categories are retrieved successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "categories.store",
+                "summary": "Store a new category",
+                "tags": [
+                    "Category"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCategoryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "$ref": "#/components/schemas/CategoryResource"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Categories are created successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/categories/{category}": {
+            "get": {
+                "operationId": "categories.show",
+                "summary": "Show a single category",
+                "tags": [
+                    "Category"
+                ],
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "required": true,
+                        "description": "The category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "$ref": "#/components/schemas/CategoryResource"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Categories are retrieved successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "categories.update",
+                "summary": "Update a category",
+                "tags": [
+                    "Category"
+                ],
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "required": true,
+                        "description": "The category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCategoryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "$ref": "#/components/schemas/CategoryResource"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Categories are updated successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "categories.destroy",
+                "summary": "Delete a category",
+                "tags": [
+                    "Category"
+                ],
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "path",
+                        "required": true,
+                        "description": "The category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Categories are deleted successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/customer": {
+            "get": {
+                "operationId": "customer.index",
+                "summary": "Display a listing of the resource",
+                "tags": [
+                    "Customer"
+                ],
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "3. SORT (order by a field and direction)",
+                        "schema": {
+                            "type": "string",
+                            "default": "id"
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "description": "default sort column",
+                        "schema": {
+                            "type": "string",
+                            "default": "asc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return the response with the customer data wrapped in a resource collection",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CustomerResource"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "Transform the data using CustomerResource",
+                                            "enum": [
+                                                "Customers are retrieved successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "success",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "customer.store",
+                "summary": "Store a newly created resource in storage",
+                "tags": [
+                    "Customer"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreCustomerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`CustomerResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerResource"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/customer/{customer}": {
+            "get": {
+                "operationId": "customer.show",
+                "summary": "Display the specified resource",
+                "tags": [
+                    "Customer"
+                ],
+                "parameters": [
+                    {
+                        "name": "customer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The customer ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "`CustomerResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "customer.update",
+                "summary": "Update the specified resource in storage",
+                "tags": [
+                    "Customer"
+                ],
+                "parameters": [
+                    {
+                        "name": "customer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The customer ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateCustomerRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "`CustomerResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CustomerResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "customer.destroy",
+                "summary": "Remove the specified resource from storage",
+                "tags": [
+                    "Customer"
+                ],
+                "parameters": [
+                    {
+                        "name": "customer",
+                        "in": "path",
+                        "required": true,
+                        "description": "The customer ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "$ref": "#/components/schemas/Customer"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Customers are deleted successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/menus": {
+            "get": {
+                "operationId": "menus.index",
+                "summary": "List menus with search, filters, sort, and pagination",
+                "tags": [
+                    "Menu"
+                ],
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "price_from",
+                        "in": "query",
+                        "description": "Filter by price range",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "price_to",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "description": "Sort",
+                        "schema": {
+                            "type": "string",
+                            "default": "id"
+                        }
+                    },
+                    {
+                        "name": "sort_order",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": "asc"
+                        }
+                    },
+                    {
+                        "name": "all",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "default": false
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return response with menus",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {},
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Menus are retrieved successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "menus.store",
+                "summary": "Store a new menu item",
+                "tags": [
+                    "Menu"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreMenuRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Create full URL (http:127.0.0.1:8000/storage/menus/filename)",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "$ref": "#/components/schemas/MenuResource"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Menus are created successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/menus/{menu}": {
+            "get": {
+                "operationId": "menus.show",
+                "summary": "Show a specific menu item",
+                "tags": [
+                    "Menu"
+                ],
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "required": true,
+                        "description": "The menu ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return the specific menu with its details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "$ref": "#/components/schemas/MenuResource"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Menus are retrieved successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "put": {
+                "operationId": "menus.update",
+                "summary": "Update menu",
+                "tags": [
+                    "Menu"
+                ],
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "required": true,
+                        "description": "The menu ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateMenuRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Return the updated menu in the desired format",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "title": {
+                                                            "type": "string"
+                                                        },
+                                                        "slug": {
+                                                            "type": "string"
+                                                        },
+                                                        "category_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "price": {
+                                                            "type": "integer"
+                                                        },
+                                                        "image": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_id": {
+                                                            "type": "integer",
+                                                            "description": "Full image URL"
+                                                        },
+                                                        "created_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        },
+                                                        "updated_at": {
+                                                            "type": [
+                                                                "string",
+                                                                "null"
+                                                            ],
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "id",
+                                                        "title",
+                                                        "slug",
+                                                        "category_id",
+                                                        "price",
+                                                        "image",
+                                                        "user_id",
+                                                        "created_at",
+                                                        "updated_at"
+                                                    ]
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Menus are updated successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "menus.destroy",
+                "summary": "Delete a menu item",
+                "tags": [
+                    "Menu"
+                ],
+                "parameters": [
+                    {
+                        "name": "menu",
+                        "in": "path",
+                        "required": true,
+                        "description": "The menu ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Return success message",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "menu": {
+                                                    "$ref": "#/components/schemas/Menu"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Menus are deleted successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "menu",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ModelNotFoundException"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/profile/logout": {
+            "post": {
+                "operationId": "profile.logout",
+                "summary": "Log the user out",
+                "tags": [
+                    "Profile"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "null"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Logged out successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/profile/change-name": {
+            "post": {
+                "operationId": "profile.changeName",
+                "summary": "Change name",
+                "tags": [
+                    "Profile"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeNameRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "$ref": "#/components/schemas/ProfileResource"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Name changed successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/profile/change-password": {
+            "post": {
+                "operationId": "profile.changePassword",
+                "summary": "Change password",
+                "tags": [
+                    "Profile"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "null"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Password changed successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/profile/change-profile-image": {
+            "post": {
+                "operationId": "profile.changeProfileImage",
+                "summary": "Change profile image",
+                "tags": [
+                    "Profile"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangeProfileImageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "$ref": "#/components/schemas/ProfileResource"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Profile image changed successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/profile/show": {
+            "get": {
+                "operationId": "profile.show",
+                "summary": "Get user profile",
+                "tags": [
+                    "Profile"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "$ref": "#/components/schemas/ProfileResource"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "User profile retrieved successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "http": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        },
+        "schemas": {
+            "CategoryResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "slug",
+                    "user_id",
+                    "created_at",
+                    "updated_at",
+                    "owner"
+                ],
+                "title": "CategoryResource"
+            },
+            "ChangeNameRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "ChangeNameRequest"
+            },
+            "ChangePasswordRequest": {
+                "type": "object",
+                "properties": {
+                    "old_password": {
+                        "type": "string"
+                    },
+                    "new_password": {
+                        "type": "string",
+                        "minLength": 8
+                    },
+                    "new_password_confirmation": {
+                        "type": "string",
+                        "minLength": 8
+                    }
+                },
+                "required": [
+                    "old_password",
+                    "new_password",
+                    "new_password_confirmation"
+                ],
+                "title": "ChangePasswordRequest"
+            },
+            "ChangeProfileImageRequest": {
+                "type": "object",
+                "properties": {
+                    "profile_image": {
+                        "type": "string",
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 20480
+                    }
+                },
+                "required": [
+                    "profile_image"
+                ],
+                "title": "ChangeProfileImageRequest"
+            },
+            "Customer": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "date_of_birth": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "phone",
+                    "address",
+                    "date_of_birth",
+                    "user_id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "Customer"
+            },
+            "CustomerResource": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "customer": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "email": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "date_of_birth": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
+                                    "created_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
+                                    },
+                                    "updated_at": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ],
+                                        "format": "date-time"
+                                    },
+                                    "owner": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                },
+                                "required": [
+                                    "id",
+                                    "name",
+                                    "email",
+                                    "phone",
+                                    "address",
+                                    "date_of_birth",
+                                    "created_at",
+                                    "updated_at",
+                                    "owner"
+                                ]
+                            },
+                            "message": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "customer",
+                            "message"
+                        ]
+                    }
+                },
+                "required": [
+                    "data"
+                ],
+                "title": "CustomerResource"
+            },
+            "LoginRequest": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "title": "LoginRequest"
+            },
+            "Menu": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "category_id": {
+                        "type": "integer"
+                    },
+                    "price": {
+                        "type": "integer"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "slug",
+                    "category_id",
+                    "price",
+                    "image",
+                    "user_id",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "Menu"
+            },
+            "MenuResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "category_id": {
+                        "type": "integer"
+                    },
+                    "price": {
+                        "type": "integer"
+                    },
+                    "image": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "owner": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "slug",
+                    "category_id",
+                    "price",
+                    "image",
+                    "user_id",
+                    "created_at",
+                    "updated_at",
+                    "owner"
+                ],
+                "title": "MenuResource"
+            },
+            "ProfileResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "profile_image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "profile_image",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "ProfileResource"
+            },
+            "RegisterRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 255
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 8
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "minLength": 8
+                    }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "title": "RegisterRequest"
+            },
+            "StoreCategoryRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "title",
+                    "slug",
+                    "user_id"
+                ],
+                "title": "StoreCategoryRequest"
+            },
+            "StoreCustomerRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "date_of_birth": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "phone"
+                ],
+                "title": "StoreCustomerRequest"
+            },
+            "StoreMenuRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "category_id": {
+                        "type": "integer"
+                    },
+                    "price": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 20480
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "description": "Image validation"
+                    }
+                },
+                "required": [
+                    "title",
+                    "slug",
+                    "category_id",
+                    "price",
+                    "image",
+                    "user_id"
+                ],
+                "title": "StoreMenuRequest"
+            },
+            "UpdateCategoryRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "slug": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "user_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    }
+                },
+                "title": "UpdateCategoryRequest"
+            },
+            "UpdateCustomerRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email"
+                    },
+                    "phone": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "date_of_birth": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "title": "UpdateCustomerRequest"
+            },
+            "UpdateMenuRequest": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "slug": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Title is optional but must be valid if provided"
+                    },
+                    "category_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ],
+                        "description": "Unique slug, ignoring current record"
+                    },
+                    "price": {
+                        "type": [
+                            "number",
+                            "null"
+                        ],
+                        "description": "Optional category, but must be valid if provided",
+                        "minimum": 0
+                    },
+                    "image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Optional price, but must be valid if provided"
+                    },
+                    "user_id": {
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "user_id"
+                ],
+                "title": "UpdateMenuRequest"
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "email_verified_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "profile_image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "email_verified_at",
+                    "profile_image",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "User"
+            }
+        },
+        "responses": {
+            "ValidationException": {
+                "description": "Validation error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Errors overview."
+                                },
+                                "errors": {
+                                    "type": "object",
+                                    "description": "A detailed description of each field that failed validation.",
+                                    "additionalProperties": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "message",
+                                "errors"
+                            ]
+                        }
+                    }
+                }
+            },
+            "AuthenticationException": {
+                "description": "Unauthenticated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            },
+            "ModelNotFoundException": {
+                "description": "Not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "description": "Error overview."
+                                }
+                            },
+                            "required": [
+                                "message"
+                            ]
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
