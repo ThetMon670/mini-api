@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Force HTTPS for non-local environments
         if (!app()->environment('local')) {
-            request()->server->set('HTTPS', 'on');
+            // URL::forceScheme('https');
+            $this->app['request']->server->set('HTTPS', 'on');
         }
 
         // Defer DB listener until app is fully booted
