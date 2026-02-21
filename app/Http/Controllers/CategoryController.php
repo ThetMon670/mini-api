@@ -17,37 +17,55 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Category::query();
-        // Eager load the user
-        $query->with('user');
+        // GET SEARCH PARAMETERS
+        $searchTerm = $request->input('q');
 
-        // Search by title or slug
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('slug', 'like', "%{$search}%");
+        // VALIDATE AND SET SORTING PARAMETERS
+        $validSortColumns = ['id', 'title', 'created_at', 'updated_at'];
+
+        $sortBy = in_array($request->input('sort_by'), $validSortColumns, true)
+            ? $request->input('sort_by')
+            : 'id';
+
+        $sortDirection = in_array($request->input('sort_direction'), ['asc', 'desc'], true)
+            ? $request->input('sort_direction')
+            : 'desc';
+
+        // VALIDATE AND SET PAGINATION LIMIT
+        $limit = $request->input('limit', 5);
+        $limit = is_numeric($limit) && $limit > 0 && $limit <= 100
+            ? (int) $limit
+            : 5;
+
+        // INITIALIZE QUERY (Scoped to authenticated user)
+        $query = Category::query()->where('user_id', Auth::id());
+
+        // APPLY SEARCH FILTER
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('title', 'like', '%' . $searchTerm . '%');
             });
         }
 
-        // Sort
-        $sortBy = $request->input('sort_by', 'id');
-        $sortOrder = $request->input('sort_order', 'asc');
-        $query->orderBy($sortBy, $sortOrder);
+        // APPLY SORTING
+        $query->orderBy($sortBy, $sortDirection);
 
-        // Pagination or fetch all
-        $all = filter_var($request->input('all', false), FILTER_VALIDATE_BOOLEAN);
-        if ($all) {
-            $categories = $query->get();
-        } else {
-            $categories = $query->paginate(10);
-        }
+        // EXECUTE PAGINATED QUERY
+        $categories = $query->paginate($limit);
 
-        // Return wrapped response
-        return response()->json([
-            'success' => CategoryResource::collection($categories)->response()->getData(true),
-            'message' => 'Categories are retrieved successfully',
+        // PRESERVE QUERY PARAMETERS IN PAGINATION LINKS
+        $categories->appends([
+            'q' => $searchTerm,
+            'sort_by' => $sortBy,
+            'sort_direction' => $sortDirection,
+            'limit' => $limit,
         ]);
+
+        // RETURN RESOURCE COLLECTION
+        return CategoryResource::collection($categories)
+            ->additional([
+                'message' => 'Categories retrieved successfully',
+            ]);
     }
 
     /**

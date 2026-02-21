@@ -15,17 +15,17 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'test',
-                'email' => 'test@gmail.com',
-                'password' => Hash::make('asdffdsa'),
-                'profile_image' => null,
-            ],
-            [
                 'name' => 'Admin',
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('asdffdsa'),
                 'profile_image' => 'images/images2.jpg',
             ],
+             [
+                'name' => 'test',
+                'email' => 'test@gmail.com',
+                'password' => Hash::make('asdffdsa'),
+                'profile_image' => null,
+            ]
         ];
 
         foreach ($users as $user) {
