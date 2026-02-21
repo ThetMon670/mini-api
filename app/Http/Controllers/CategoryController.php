@@ -6,14 +6,17 @@ use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
-     * List categories with search, sort, and pagination.
+     * Display a listing of the resource.
      */
     public function index(Request $request)
     {
@@ -21,7 +24,7 @@ class CategoryController extends Controller
         $searchTerm = $request->input('q');
 
         // VALIDATE AND SET SORTING PARAMETERS
-        $validSortColumns = ['id', 'title', 'created_at', 'updated_at'];
+        $validSortColumns = ['id', 'title', 'slug', 'created_at', 'updated_at'];
 
         $sortBy = in_array($request->input('sort_by'), $validSortColumns, true)
             ? $request->input('sort_by')
@@ -35,15 +38,16 @@ class CategoryController extends Controller
         $limit = $request->input('limit', 5);
         $limit = is_numeric($limit) && $limit > 0 && $limit <= 100
             ? (int) $limit
-            : 5;
+            : 10;
 
-        // INITIALIZE QUERY (Scoped to authenticated user)
+        // INITIALIZE QUERY
         $query = Category::query()->where('user_id', Auth::id());
 
         // APPLY SEARCH FILTER
         if ($searchTerm) {
             $query->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'like', '%' . $searchTerm . '%');
+                $q->where('title', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('slug', 'like', '%' . $searchTerm . '%');
             });
         }
 
@@ -61,66 +65,63 @@ class CategoryController extends Controller
             'limit' => $limit,
         ]);
 
-        // RETURN RESOURCE COLLECTION
+        // RETURN RESOURCE COLLECTION (Same Style as CustomerController)
         return CategoryResource::collection($categories)
             ->additional([
-                'message' => 'Categories retrieved successfully',
+                'message' => 'Categories are retrieved successfully',
             ]);
     }
 
     /**
-     * Store a new category.
+     * Store a newly created resource in storage.
      */
     public function store(StoreCategoryRequest $request)
     {
         $category = Category::create([
             ...$request->validated(),
             'slug' => Str::slug($request->title),
-            'user_id' => Auth::id()
+            'user_id' => Auth::id(),
         ]);
 
-        return response()->json([
-            'data' => new CategoryResource($category),
-            'message' => 'Categories are created successfully',
-        ]);
+        return new CategoryResource($category, 'Categories are created successfully');
     }
 
     /**
-     * Show a single category.
+     * Display the specified resource.
      */
     public function show(Category $category)
     {
-        return response()->json([
-            'data' => new CategoryResource($category),
-            'message' => 'Categories are retrieved successfully',
-        ]);
+        return new CategoryResource($category, 'Categories are retrieved successfully');
     }
 
     /**
-     * Update a category.
+     * Update the specified resource in storage.
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         $data = $request->validated();
-        if (isset($data['title']) &&  $data['title'] !== $category->title) {
+
+        if (isset($data['title']) && $data['title'] !== $category->title) {
             $data['slug'] = Str::slug($data['title']);
         }
+
         $category->update($data);
-        return response()->json([
-            'data' => new CategoryResource($category),
-            'message' => 'Categories are updated successfully',
-        ]);
+
+        return new CategoryResource($category, 'Categories are updated successfully');
     }
 
     /**
-     * Delete a category.
+     * Remove the specified resource from storage.
      */
     public function destroy(Category $category)
     {
         $category->delete();
 
         return response()->json([
-            'message' => 'Categories are deleted successfully',
+            'data' => [
+                'success' => true,
+                'message' => 'Categories are deleted successfully',
+            ]
         ]);
     }
 }

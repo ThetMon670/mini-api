@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use function PHPUnit\Framework\isNumeric;
+
 class MenuController extends Controller
 {
     use AuthorizesRequests;
@@ -17,54 +19,66 @@ class MenuController extends Controller
 
     public function index(Request $request)
     {
-        $query = Menu::query();
+       // GET SEARCH TERM FROM REQUEST
+        $searchTerm = $request->input("q");
 
-        // restrict by user except admin
-        $query->when(Auth::id() != 1, function ($q) {
-            $q->where('user_id', Auth::id());
-        });
+        // VALIDATE AND SET SORTING PARAMETERS
+        $validSortColumn = ['id', 'title', 'price'];
 
-        // eager load
-        $query->with(['user','category']);
+        $sortBy = in_array($request->input('sort_by'), $validSortColumn, true) ? $request->input('sort_by') : "id";
 
-        // 🔎 search
-        if ($request->has('search')) {
-            $search = $request->search;
+        $sortDirection = in_array($request->input('sort_direction'), ['asc', 'desc'], true) ? $request->input('sort_direction') : 'desc';
 
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%$search%")
-                  ->orWhere('slug', 'like', "%$search%");
+        // GET PRICE RANGE PARAMETERS
+        $priceMin = $request->input("price_min");
+        $priceMax = $request->input("price_max");
+
+        // VALIDATE AND SET PAGINATION LIMIT
+        $limit = $request->input('limit', 5);
+
+        $limit = is_numeric($limit) && $limit > 0 && $limit <= 100 ? (int) $limit :  10;
+
+        // INITIALIZE QUERY WITH USER SCOPE
+        $query = Menu::query()->where('user_id', Auth::id())->with('category');
+
+
+        // APPLY SEARCH FILTER IF SEARCH TERM EXISTS
+        if ($searchTerm) {
+            $query->when($searchTerm, function ($q) use ($searchTerm) {
+                $q->where('title', 'like', "%{$searchTerm}%")
+                    ->orWhereHas('category', function ($cat) use ($searchTerm) {
+                        $cat->where('title', 'like', "%{$searchTerm}%")
+                            ->orWhere('slug', 'like', "%{$searchTerm}%");
+                    });;
             });
         }
 
-        // 🎯 filter by category
-        if ($request->filled('category_id')) {
-            $query->where('category_id', $request->category_id);
+        // APPLY PRICE RANGE FILTER
+        if ($priceMin !== null && isNumeric($priceMin)) {
+            $query->where('price', ">=", (float) $priceMin);
+        }
+        if ($priceMax !== null && isNumeric($priceMax)) {
+            $query->where('price', "<=", (float) $priceMax);
         }
 
-        // 💰 price range filter
-        if ($request->filled('price_from') && $request->filled('price_to')) {
-            $query->whereBetween('price', [
-                $request->price_from,
-                $request->price_to
-            ]);
-        }
+        //APPLY SORTING PRODUCT
+        $query->orderBy($sortBy, $sortDirection);
 
-        // 🔽 sort
-        $sort_by = $request->input('sort_by', 'id');
-        $sort_order = $request->input('sort_order', 'asc');
+        // EXECUTE PAGINATED QUERY
+        $menus = $query->paginate($limit);
 
-        $query->orderBy($sort_by, $sort_order);
-
-        // 📄 paginate or all
-        $menus = $request->boolean('all')
-            ? $query->get()
-            : $query->paginate(10);
-
-        return response()->json([
-            'success' => MenuResource::collection($menus),
-            'message' => 'Menus are retrieved successfully',
+        // PRESERVE ALL QUERY PARAMETERS IN PAGINATION LINKS
+        $menus->appends([
+            'q' => $searchTerm,
+            'sort_by' => $sortBy,
+            'sort_direction' => $sortDirection,
+            'limit' => $limit,
+            'price_min' => $priceMin,
+            'price_max' => $priceMax,
         ]);
+
+
+        return MenuResource::collection($menus)->additional(["message" => "Menus are retrieved successfully"]);
     }
 
     public function store(StoreMenuRequest $request)

@@ -21,57 +21,57 @@ class CustomerController extends Controller
      */
     public function index(Request $request) 
     {
-        //Gate::authorize('viewAny', Customer::class);
-        // Initialize query to fetch customers
-        //  $query = Customer::where('user_id', Auth::id());
-         $query = Customer::query();
+        // GET SEARCH PARAMETERS
+        $searchTerm = $request->input('q');
 
-         //must filter
-        $query->when(Auth::id() != 1, function($query)
-        {
-            $query->where("user_id", Auth::id());
-        });
+        // VALIDATE AND SET SORTING PARAMETERS
+        $validSortColumns = ['id', 'name', 'email', 'phone', 'address', 'date_of_birth'];
+        $sortBy = in_array($request->input('sort_by'), $validSortColumns, true)
+            ? $request->input('sort_by')
+            : 'id';
 
-        //with
-        $query->with("user");
-        
-        // 1. SEARCH (like on name, email, phone, etc.)
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
-                    ->orWhere('address', 'like', "%{$search}%");
+        $sortDirection = in_array($request->input('sort_direction'), ['asc', 'desc'], true)
+            ? $request->input('sort_direction')
+            : 'desc';
+
+        // VALIDATE AND SET PAGINATION LIMIT
+        $limit = $request->input('limit', 5);
+        $limit = is_numeric($limit) && $limit > 0 && $limit <= 100
+            ? (int) $limit
+            : 10;
+
+        // INITIALIZE QUERY
+        $query = Customer::query();
+
+        // APPLY SEARCH FILTER
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('email', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('phone', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('address', 'like', '%' . $searchTerm . '%');
             });
         }
 
-        // 2. FILTER: Date of Birth range (dob_from, dob_to)
-        if ($request->filled('dob_from') && $request->filled('dob_to')) {
-            $query->whereBetween('date_of_birth', [
-                $request->dob_from,
-                $request->dob_to
-            ]);
-        }
+        // APPLY SORTING
+        $query->orderBy($sortBy, $sortDirection);
 
-        // 3. SORT (order by a field and direction)
-        $sort_by = $request->input('sort_by', 'id'); // default sort column
-        $sort_order = $request->input('sort_order', 'asc'); // default sort order
-        $query->orderBy($sort_by, $sort_order);
+        // EXECUTE PAGINATED QUERY
+        $customers = $query->paginate($limit);
 
-        // 4. PAGINATE or get all
-        // If 'all' is passed in the request, fetch all results, otherwise paginate.
-        if ($request->input('all', false)) {
-            $customers = $query->get(); // Fetch all customers (no pagination)
-        } else {
-            $customers = $query->paginate(10);  // Paginate the results (10 per page)
-        }
-
-        // Return the response with the customer data wrapped in a resource collection
-        return response()->json([
-            'success' => CustomerResource::collection($customers),  // Transform the data using CustomerResource
-            'message' => 'Customers are retrieved successfully',
+        // PRESERVE QUERY PARAMETERS IN PAGINATION LINKS
+        $customers->appends([
+            'q' => $searchTerm,
+            'sort_by' => $sortBy,
+            'sort_direction' => $sortDirection,
+            'limit' => $limit,
         ]);
+
+        // RETURN RESOURCE COLLECTION
+        return CustomerResource::collection($customers)
+            ->additional([
+                'message' => 'Customers are retrieved successfully',
+            ]);
     }
 
     /**

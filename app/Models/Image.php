@@ -14,11 +14,11 @@ class Image extends Model
 
     protected static function booted()
     {
-        static::deleting(function ($image) {
-            if ($image->url && Storage::disk('public')->exists($image->url)) {
-                Storage::disk('public')->delete($image->url);
-            }
-        });
+        // static::deleting(function ($image) {
+        //     if ($image->url && Storage::disk('public')->exists($image->url)) {
+        //         Storage::disk('public')->delete($image->url);
+        //     }
+        // });
     }
 
     public function user()
