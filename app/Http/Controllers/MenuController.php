@@ -85,7 +85,7 @@ class MenuController extends Controller
     {
         $data = $request->validated();
 
-        // upload image
+        // Handle image upload
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('menus', 'public');
         }

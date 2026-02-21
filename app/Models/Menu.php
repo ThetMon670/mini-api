@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Menu extends Model
 {
@@ -35,7 +36,13 @@ class Menu extends Model
         //         Storage::disk('public')->delete($menu->image);
         //     }
         // });
+        parent::boot();
+
+        static::creating(function ($menu) {
+            $menu->slug = Str::slug($menu->title);
+        });
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);

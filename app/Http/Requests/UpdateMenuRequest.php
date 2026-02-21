@@ -18,11 +18,8 @@ class UpdateMenuRequest extends FormRequest
 
         return [
             'title' => ['sometimes','string','max:255'],
-            'slug' => ['sometimes','string',"unique:menus,slug,$menuId"],
-            'category_id' => ['sometimes','exists:categories,id'],
             'price' => ['sometimes','integer','min:0'],
 
-            // ✅ optional file upload
             'image' => ['sometimes','file','image','max:2048'],
         ];
     }
