@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -54,11 +55,14 @@ class CategoryController extends Controller
      */
     public function store(StoreCategoryRequest $request)
     {
-        $validatedData = $request->validated();
-        $category = Category::create($validatedData);
+        $category = Category::create([
+            ...$request->validated(),
+            'slug' => Str::slug($request->title),
+            'user_id' => Auth::id()
+        ]);
 
         return response()->json([
-            'success' => new CategoryResource($category),
+            'data' => new CategoryResource($category),
             'message' => 'Categories are created successfully',
         ]);
     }
@@ -69,7 +73,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         return response()->json([
-            'success' => new CategoryResource($category),
+            'data' => new CategoryResource($category),
             'message' => 'Categories are retrieved successfully',
         ]);
     }
@@ -79,10 +83,13 @@ class CategoryController extends Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $category->update($request->all());
-
+        $data = $request->validated();
+        if (isset($data['title']) &&  $data['title'] !== $category->title) {
+            $data['slug'] = Str::slug($data['title']);
+        }
+        $category->update($data);
         return response()->json([
-            'success' => new CategoryResource($category),
+            'data' => new CategoryResource($category),
             'message' => 'Categories are updated successfully',
         ]);
     }

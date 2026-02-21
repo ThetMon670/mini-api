@@ -23,18 +23,8 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function rules()
     {
-        // Safely access the category ID
-        $categoryId = Route::current()->parameter('category');
-
-        if (is_null($categoryId)) {
-            // Handle case where category ID is not found
-            abort(400, 'Category ID is required.');
-        }
-
         return [
-            'title' => 'nullable|string',
-            'slug' => 'nullable|string|unique:categories,slug,' . $this->route('categories'),
-            'user_id' => 'nullable|exists:users,id',
+            'title' => 'sometimes|string|max:255',
         ];
     }
 }
