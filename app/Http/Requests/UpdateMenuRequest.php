@@ -19,7 +19,7 @@ class UpdateMenuRequest extends FormRequest
         return [
             'title' => ['sometimes','string','max:255'],
             'price' => ['sometimes','integer','min:0'],
-            'category_id' => ['sometimes', 'exists:categories,id'],
+            'category_id' => ['sometimes','nullable','exists:categories,id'],
             'image' => ['sometimes','file','image','max:2048'],
         ];
     }
