@@ -19,7 +19,7 @@ class MenuController extends Controller
 
     public function index(Request $request)
     {
-       // GET SEARCH TERM FROM REQUEST
+        // GET SEARCH TERM FROM REQUEST
         $searchTerm = $request->input("q");
 
         // VALIDATE AND SET SORTING PARAMETERS
@@ -99,7 +99,7 @@ class MenuController extends Controller
 
     public function show(Menu $menu)
     {
-        return new MenuResource($menu->load(['user','category']), 'Menus are retrieved successfully');
+        return new MenuResource($menu->load(['user', 'category']), 'Menus are retrieved successfully');
     }
 
     public function update(UpdateMenuRequest $request, Menu $menu)
@@ -110,7 +110,6 @@ class MenuController extends Controller
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('menus', 'public');
         }
-
         $menu->update($data);
 
         return new MenuResource($menu, 'Menus are updated successfully');
