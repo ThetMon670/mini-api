@@ -5,6 +5,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\VoucherItemController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AuthController::class)->group(function() {
@@ -27,4 +29,6 @@ Route::middleware('auth:sanctum')->group(function()
     Route::resource('menus', MenuController::class);
     Route::resource('images', ImageController::class)
     ->only(['store', 'destroy']);
+    Route::apiResource('/items', VoucherItemController::class)->only('index');
+    Route::apiResource('/vouchers', VoucherController::class)->except('update');
 });
