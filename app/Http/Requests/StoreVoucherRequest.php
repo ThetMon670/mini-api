@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\OrderType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreVoucherRequest extends FormRequest
 {
@@ -23,10 +24,15 @@ class StoreVoucherRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_id' => 'nullable|integer',
+            'customer_id' => 'nullable|integer|exists:customers,id',
             'date' => 'required|date',
-            'order_type' => 'required|in:dine_in,take_away',
-            'voucher_items' => 'required|array',
+            'cash' => 'required|integer|min:0',
+            'change' => 'required|integer|min:0',
+            'type' => [
+                'required',
+                Rule::in(config('base.sale_type')),
+            ],
+            'voucher_items' => 'required|array|min:0',
             'voucher_items.*.menu_id' => 'required|integer|exists:menus,id',
             'voucher_items.*.quantity' => 'required|integer|min:1',
         ];

@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
                 'password' => Hash::make('asdffdsa'),
                 'profile_image' => 'images/images2.jpg',
             ],
-             [
+            [
                 'name' => 'test',
                 'email' => 'test@gmail.com',
                 'password' => Hash::make('asdffdsa'),

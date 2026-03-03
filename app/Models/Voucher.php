@@ -15,15 +15,16 @@ class Voucher extends Model
         "date",
         "total",
         "tax",
+        "cash",
+        "change",
         "net_total",
         "voucher_items_count",
-        "order_type",
+        "type",
         "user_id",
 
     ];
 
     protected $casts = [
-        'order_type' => OrderType::class,
         "voucher_items"    => "array",
     ];
 

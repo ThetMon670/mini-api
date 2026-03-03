@@ -105,72 +105,65 @@ class VoucherController extends Controller
      */
     public function store(StoreVoucherRequest $request)
     {
-        DB::beginTransaction();
-
         try {
-            $total = 0;
-            $totalQuantity = 0;
+            DB::beginTransaction();
 
-            // Create Voucher FIRST
-            $voucher = Voucher::create([
-                'customer_id' => $request->customer_id ?? null,
-                'date' => $request->date,
-                'total' => 0, // temporary, will update after items
-                'tax' => 0,
-                'net_total' => 0,
-                'voucher_items_count' => 0, // temporary
-                'order_type' => $request->order_type,
-                'user_id' => Auth::id(),
-            ]);
+            // voucher_times array
+            $menuItemCollection = collect($request->validated()['voucher_items']);
 
-            $voucherItemsData = [];
+            $menus = Menu::whereIn("id", $menuItemCollection->pluck('menu_id')->toArray())->get();
 
-            foreach ($request->voucher_items as $item) {
-                $menu = Menu::findOrFail($item['menu_id']);
-                $cost = $menu->price * $item['quantity'];
+            $voucherItems = [];
 
-                $total += $cost;
-                $totalQuantity += $item['quantity'];
-
-                $voucherItemsData[] = [
-                    'voucher_id' => $voucher->id,  // 🔥 Attach voucher_id here
-                    'menu_id' => $menu->id,
-                    'price' => $menu->price,
+            $menuItemCollection->each(function ($item) use ($menus, &$voucherItems) {
+                $menu = $menus->firstWhere('id', $item['menu_id']);
+                $voucherItems[] = [
+                    'menu_id' => $item['menu_id'],
+                    'menu' => $menu,
                     'quantity' => $item['quantity'],
-                    'cost' => $cost,
-                    'menu' => json_encode($menu),
-                    'user_id' => Auth::id(),
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'price' => $menu->price,
+                    'cost' => $menu->price * $item['quantity'],
+                    'user_id' => Auth::id()
                 ];
-            }
+            });
 
-            VoucherItem::insert($voucherItemsData);
+            // total, tax, net_total
+            $total = collect($voucherItems)->sum('cost');
+            $tax = $total * 0.07;
+            $netTotal = $total + $tax;
 
-            // Update Voucher totals
-            $tax = $total * 0.05;
-            $net_total = $total + $tax;
-
-            $voucher->update([
+            // store voucher
+            $voucher = Voucher::create([
+                'customer_id' => $request->validated()['customer_id'],
+                'date' => now()->toDateString(),
                 'total' => $total,
                 'tax' => $tax,
-                'net_total' => $net_total,
-                'voucher_items_count' => $totalQuantity,
+                'net_total' => $netTotal,
+                'cash' => $request->validated()['cash'],
+                'change' => $request->validated()['change'],
+                'voucher_items_count' => count($voucherItems),
+                'user_id' => Auth::id(),
+                'type' => $request->validated()['type'],
             ]);
+
+            // store voucher_items
+            $voucherItems = collect($voucherItems)->map(function ($item) use ($voucher) {
+                $item['voucher_id'] = $voucher->id;
+                return $item;
+            })->toArray();
+
+            VoucherItem::insert($voucherItems);
 
             DB::commit();
 
             return response()->json([
-                'message' => 'Voucher created successfully',
-                'data' => $voucher->load('voucher_items'),
-            ], 201);
-        } catch (\Throwable $th) {
+                "message" => "Voucher stored successfully"
+            ]);
+        } catch (\Exception $e) {
             DB::rollBack();
-
             return response()->json([
-                'message' => 'Failed to create voucher',
-                'error' => $th->getMessage()
-            ], 500);
+                "message" => $e->getMessage()
+            ], 422);
         }
     }
 
