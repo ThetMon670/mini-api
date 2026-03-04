@@ -15,6 +15,7 @@ class StoreMenuRequest extends FormRequest
     {
         return [
             'title' => ['required','string','max:255'],
+            'unit' => 'required|string|max:255',
             'price' => ['required','integer','min:0'],
             'category_id' => 'required|integer|exists:categories,id',
 
