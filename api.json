@@ -159,7 +159,7 @@
         "/categories": {
             "get": {
                 "operationId": "categories.index",
-                "summary": "List categories with search, sort, and pagination",
+                "summary": "Display a listing of the resource",
                 "tags": [
                     "Category"
                 ],
@@ -198,7 +198,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "RETURN RESOURCE COLLECTION\n\n\n\nPaginated set of `CategoryResource`",
+                        "description": "RETURN RESOURCE COLLECTION (Same Style as CustomerController)\n\n\n\nPaginated set of `CategoryResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -329,7 +329,7 @@
                                         "message": {
                                             "type": "string",
                                             "enum": [
-                                                "Categories retrieved successfully"
+                                                "Categories are retrieved successfully"
                                             ]
                                         }
                                     },
@@ -350,7 +350,7 @@
             },
             "post": {
                 "operationId": "categories.store",
-                "summary": "Store a new category",
+                "summary": "Store a newly created resource in storage",
                 "tags": [
                     "Category"
                 ],
@@ -366,7 +366,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "`CategoryResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -374,17 +374,10 @@
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/CategoryResource"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "enum": [
-                                                "Categories are created successfully"
-                                            ]
                                         }
                                     },
                                     "required": [
-                                        "data",
-                                        "message"
+                                        "data"
                                     ]
                                 }
                             }
@@ -402,7 +395,7 @@
         "/categories/{category}": {
             "get": {
                 "operationId": "categories.show",
-                "summary": "Show a single category",
+                "summary": "Display the specified resource",
                 "tags": [
                     "Category"
                 ],
@@ -419,7 +412,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "`CategoryResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -427,17 +420,10 @@
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/CategoryResource"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "enum": [
-                                                "Categories are retrieved successfully"
-                                            ]
                                         }
                                     },
                                     "required": [
-                                        "data",
-                                        "message"
+                                        "data"
                                     ]
                                 }
                             }
@@ -453,7 +439,7 @@
             },
             "put": {
                 "operationId": "categories.update",
-                "summary": "Update a category",
+                "summary": "Update the specified resource in storage",
                 "tags": [
                     "Category"
                 ],
@@ -479,7 +465,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "`CategoryResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -487,17 +473,10 @@
                                     "properties": {
                                         "data": {
                                             "$ref": "#/components/schemas/CategoryResource"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "enum": [
-                                                "Categories are updated successfully"
-                                            ]
                                         }
                                     },
                                     "required": [
-                                        "data",
-                                        "message"
+                                        "data"
                                     ]
                                 }
                             }
@@ -516,7 +495,7 @@
             },
             "delete": {
                 "operationId": "categories.destroy",
-                "summary": "Delete a category",
+                "summary": "Remove the specified resource from storage",
                 "tags": [
                     "Category"
                 ],
@@ -539,15 +518,27 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "enum": [
-                                                "Categories are deleted successfully"
+                                        "data": {
+                                            "type": "object",
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Categories are deleted successfully"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "success",
+                                                "message"
                                             ]
                                         }
                                     },
                                     "required": [
-                                        "message"
+                                        "data"
                                     ]
                                 }
                             }
@@ -571,8 +562,9 @@
                 ],
                 "parameters": [
                     {
-                        "name": "search",
+                        "name": "q",
                         "in": "query",
+                        "description": "GET SEARCH PARAMETERS",
                         "schema": {
                             "type": "string"
                         }
@@ -580,46 +572,168 @@
                     {
                         "name": "sort_by",
                         "in": "query",
-                        "description": "3. SORT (order by a field and direction)",
                         "schema": {
-                            "type": "string",
-                            "default": "id"
+                            "type": "string"
                         }
                     },
                     {
-                        "name": "sort_order",
+                        "name": "sort_direction",
                         "in": "query",
-                        "description": "default sort column",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "VALIDATE AND SET PAGINATION LIMIT",
                         "schema": {
                             "type": "string",
-                            "default": "asc"
+                            "default": 5
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Return the response with the customer data wrapped in a resource collection",
+                        "description": "RETURN RESOURCE COLLECTION\n\n\n\nPaginated set of `CustomerResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "success": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/CustomerResource"
                                             }
                                         },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        },
                                         "message": {
                                             "type": "string",
-                                            "description": "Transform the data using CustomerResource",
                                             "enum": [
                                                 "Customers are retrieved successfully"
                                             ]
                                         }
                                     },
                                     "required": [
-                                        "success",
+                                        "data",
+                                        "links",
+                                        "meta",
                                         "message"
                                     ]
                                 }
@@ -812,6 +926,52 @@
                 }
             }
         },
+        "/export/vouchers/csv": {
+            "get": {
+                "operationId": "export.exportVouchersCSV",
+                "tags": [
+                    "Export"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/export/voucher-items/csv": {
+            "get": {
+                "operationId": "export.exportVoucherItemsCSV",
+                "tags": [
+                    "Export"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
         "/images": {
             "post": {
                 "operationId": "images.store",
@@ -939,36 +1099,181 @@
                 ],
                 "parameters": [
                     {
-                        "name": "sort_by",
+                        "name": "q",
                         "in": "query",
-                        "description": "\ud83d\udd3d sort",
+                        "description": "GET SEARCH TERM FROM REQUEST",
                         "schema": {
-                            "type": "string",
-                            "default": "id"
+                            "type": "string"
                         }
                     },
                     {
-                        "name": "sort_order",
+                        "name": "sort_by",
                         "in": "query",
                         "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_direction",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "price_min",
+                        "in": "query",
+                        "description": "GET PRICE RANGE PARAMETERS",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "price_max",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "VALIDATE AND SET PAGINATION LIMIT",
+                        "schema": {
                             "type": "string",
-                            "default": "asc"
+                            "default": 5
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "",
+                        "description": "Paginated set of `MenuResource`",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "success": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/components/schemas/MenuResource"
                                             }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
                                         },
                                         "message": {
                                             "type": "string",
@@ -978,7 +1283,9 @@
                                         }
                                     },
                                     "required": [
-                                        "success",
+                                        "data",
+                                        "links",
+                                        "meta",
                                         "message"
                                     ]
                                 }
@@ -1456,6 +1763,433 @@
                     }
                 }
             }
+        },
+        "/vouchers": {
+            "get": {
+                "operationId": "vouchers.index",
+                "summary": "Display a listing of the resource",
+                "tags": [
+                    "Voucher"
+                ],
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "GET SEARCH PARAMETERS",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "description": "DATE FILTER PARAMETERS",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "TYPE FILTER",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_by",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort_direction",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "PAGINATION",
+                        "schema": {
+                            "type": "string",
+                            "default": 5
+                        }
+                    },
+                    {
+                        "name": "net_total_between",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated set of `VoucherResource`",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/VoucherResource"
+                                            }
+                                        },
+                                        "links": {
+                                            "type": "object",
+                                            "properties": {
+                                                "first": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "last": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "prev": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                },
+                                                "next": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "first",
+                                                "last",
+                                                "prev",
+                                                "next"
+                                            ]
+                                        },
+                                        "meta": {
+                                            "type": "object",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "from": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "minimum": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "minimum": 1
+                                                },
+                                                "links": {
+                                                    "type": "array",
+                                                    "description": "Generated paginator links.",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "url": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "label": {
+                                                                "type": "string"
+                                                            },
+                                                            "active": {
+                                                                "type": "boolean"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "url",
+                                                            "label",
+                                                            "active"
+                                                        ]
+                                                    }
+                                                },
+                                                "path": {
+                                                    "type": [
+                                                        "string",
+                                                        "null"
+                                                    ],
+                                                    "description": "Base path for paginator generated URLs."
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "description": "Number of items shown per page.",
+                                                    "minimum": 0
+                                                },
+                                                "to": {
+                                                    "type": [
+                                                        "integer",
+                                                        "null"
+                                                    ],
+                                                    "description": "Number of the last item in the slice.",
+                                                    "minimum": 1
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "description": "Total number of items being paginated.",
+                                                    "minimum": 0
+                                                }
+                                            },
+                                            "required": [
+                                                "current_page",
+                                                "from",
+                                                "last_page",
+                                                "links",
+                                                "path",
+                                                "per_page",
+                                                "to",
+                                                "total"
+                                            ]
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Vouchers are retrieved successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "links",
+                                        "meta",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "post": {
+                "operationId": "vouchers.store",
+                "summary": "Store a newly created resource in storage",
+                "tags": [
+                    "Voucher"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StoreVoucherRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    },
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Voucher is stored successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/vouchers/{id}": {
+            "get": {
+                "operationId": "vouchers.show",
+                "summary": "Display the specified resource",
+                "tags": [
+                    "Voucher"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Voucher is retrieved successfully"
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/VoucherDetailResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Invalid Voucher ID"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "vouchers.destroy",
+                "summary": "Remove the specified resource from storage",
+                "tags": [
+                    "Voucher"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Voucher is deleted successfully."
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Invalid Voucher ID"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/items": {
+            "get": {
+                "operationId": "items.index",
+                "summary": "Display a listing of the resource",
+                "tags": [
+                    "VoucherItem"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1609,6 +2343,9 @@
                             "null"
                         ],
                         "format": "date-time"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
                     }
                 },
                 "required": [
@@ -1816,7 +2553,7 @@
                         "format": "date-time"
                     },
                     "owner": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/User"
                     }
                 },
                 "required": [
@@ -1968,15 +2705,12 @@
                         "type": "string",
                         "maxLength": 255
                     },
-                    "slug": {
-                        "type": "string"
-                    },
-                    "category_id": {
-                        "type": "integer"
-                    },
                     "price": {
                         "type": "integer",
                         "minimum": 0
+                    },
+                    "category_id": {
+                        "type": "integer"
                     },
                     "image": {
                         "type": "string",
@@ -1988,12 +2722,73 @@
                 },
                 "required": [
                     "title",
-                    "slug",
-                    "category_id",
                     "price",
+                    "category_id",
                     "image"
                 ],
                 "title": "StoreMenuRequest"
+            },
+            "StoreVoucherRequest": {
+                "type": "object",
+                "properties": {
+                    "customer_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "voucher_number": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "cash": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "change": {
+                        "type": "integer",
+                        "minimum": 0
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "dine in",
+                            "take away"
+                        ]
+                    },
+                    "voucher_items": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "menu_id": {
+                                    "type": "integer"
+                                },
+                                "quantity": {
+                                    "type": "integer",
+                                    "minimum": 1
+                                }
+                            },
+                            "required": [
+                                "menu_id",
+                                "quantity"
+                            ]
+                        },
+                        "minItems": 0
+                    }
+                },
+                "required": [
+                    "voucher_number",
+                    "date",
+                    "cash",
+                    "change",
+                    "type",
+                    "voucher_items"
+                ],
+                "title": "StoreVoucherRequest"
             },
             "UpdateCategoryRequest": {
                 "type": "object",
@@ -2051,21 +2846,20 @@
                         "type": "string",
                         "maxLength": 255
                     },
-                    "slug": {
-                        "type": "string"
-                    },
-                    "category_id": {
-                        "type": "integer"
-                    },
                     "price": {
                         "type": "integer",
                         "minimum": 0
+                    },
+                    "category_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
                     },
                     "image": {
                         "type": "string",
                         "format": "binary",
                         "contentMediaType": "application/octet-stream",
-                        "description": "\u2705 optional file upload",
                         "maxLength": 2048
                     }
                 },
@@ -2121,6 +2915,181 @@
                     "updated_at"
                 ],
                 "title": "User"
+            },
+            "VoucherDetailResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "customer_id": {
+                        "type": "string"
+                    },
+                    "voucher_number": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "cash": {
+                        "type": "string"
+                    },
+                    "change": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "string"
+                    },
+                    "tax": {
+                        "type": "string"
+                    },
+                    "net_total": {
+                        "type": "string"
+                    },
+                    "voucher_items_count": {
+                        "type": "string"
+                    },
+                    "order_type": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "voucher_items": {
+                        "type": "array",
+                        "description": "'records' => $this->records()->get(),\nInclude related records (e.g., associated products) if applicable",
+                        "items": {
+                            "$ref": "#/components/schemas/VoucherItemResource"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "customer_id",
+                    "voucher_number",
+                    "date",
+                    "cash",
+                    "change",
+                    "total",
+                    "tax",
+                    "net_total",
+                    "voucher_items_count",
+                    "order_type",
+                    "created_at",
+                    "updated_at",
+                    "voucher_items"
+                ],
+                "title": "VoucherDetailResource"
+            },
+            "VoucherItemResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "voucher_id": {
+                        "type": "integer"
+                    },
+                    "menu": {
+                        "type": "object"
+                    },
+                    "price": {
+                        "type": "integer"
+                    },
+                    "quantity": {
+                        "type": "integer"
+                    },
+                    "cost": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "voucher_id",
+                    "menu",
+                    "price",
+                    "quantity",
+                    "cost",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "VoucherItemResource"
+            },
+            "VoucherResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "customer_id": {
+                        "type": [
+                            "integer",
+                            "null"
+                        ]
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "total": {
+                        "type": "integer"
+                    },
+                    "tax": {
+                        "type": "integer"
+                    },
+                    "net_total": {
+                        "type": "integer"
+                    },
+                    "voucher_items_count": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "customer_id",
+                    "date",
+                    "total",
+                    "tax",
+                    "net_total",
+                    "voucher_items_count",
+                    "type",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "VoucherResource"
             }
         },
         "responses": {
