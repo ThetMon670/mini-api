@@ -25,6 +25,11 @@ class StoreVoucherRequest extends FormRequest
     {
         return [
             'customer_id' => 'nullable|integer|exists:customers,id',
+            'voucher_number' => [
+                'required',
+                'string',
+                Rule::unique('vouchers', 'voucher_number'), // <-- checks unique in vouchers table
+            ],
             'date' => 'required|date',
             'cash' => 'required|integer|min:0',
             'change' => 'required|integer|min:0',

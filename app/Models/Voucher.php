@@ -12,6 +12,7 @@ class Voucher extends Model
     use HasFactory;
     protected $fillable = [
         "customer_id",
+        "voucher_number",
         "date",
         "total",
         "tax",
@@ -27,9 +28,19 @@ class Voucher extends Model
     protected $casts = [
         "voucher_items"    => "array",
     ];
+    protected $with = ['customer', 'user', 'voucherItems'];
 
-    public function voucher_items()
+    public function customer()
     {
-        return $this->hasMany(VoucherItem::class, "voucher_id","id");
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function voucherItems()
+    {
+        return $this->hasMany(VoucherItem::class);
     }
 }

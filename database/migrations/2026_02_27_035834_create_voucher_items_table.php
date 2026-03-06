@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('voucher_items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('voucher_id')
+                ->constrained()
+                ->cascadeOnDelete();
+            $table->bigInteger('menu_id');
             $table->json('menu');
             $table->integer('price');
             $table->integer('quantity');
             $table->integer('cost');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('voucher_id')
-                ->constrained()
-                ->cascadeOnDelete();
-            $table->foreignId('menu_id')->constrained()->onDelete('cascade');
+            $table->bigInteger('user_id');
             $table->timestamps();
         });
     }

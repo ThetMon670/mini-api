@@ -23,11 +23,11 @@ class VoucherResource extends JsonResource
             'tax' => $this->tax,
             'net_total' => $this->net_total,
             'voucher_items_count' => $this->voucher_items_count,
-            'order_type' => $this->order_type?->value,
+            'type' => config('base.type')[$this->type] ?? $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
-    } 
+    }
 
     public function withResponse($request, $response)
     {

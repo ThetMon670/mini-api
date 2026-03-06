@@ -17,9 +17,11 @@ class Customer extends Model
         'date_of_birth',
         'user_id'
     ];
+
+    protected $with = ['user'];
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id','id');
     }
     
 }

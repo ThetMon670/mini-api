@@ -23,79 +23,102 @@ class VoucherController extends Controller
      */
     public function index(Request $request)
     {
-        // SEARCH AND SORTING PARAMETERS
+        // GET SEARCH PARAMETERS
         $searchTerm = $request->input('q');
-        $validSortColumns = ['id', 'customer_id', 'total', 'tax', 'net_total', 'voucher_items_count', 'order_type', 'date'];
+
+        // DATE FILTER PARAMETERS
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        // TYPE FILTER
+        $type = $request->input('type');
+
+        // VALID SORT COLUMNS
+        $validSortColumns = [
+            'id',
+            'voucher_number',
+            'total',
+            'tax',
+            'net_total',
+            'voucher_items_count',
+            'date',
+            'created_at'
+        ];
+
         $sortBy = in_array($request->input('sort_by'), $validSortColumns, true)
             ? $request->input('sort_by')
             : 'id';
+
         $sortDirection = in_array($request->input('sort_direction'), ['asc', 'desc'], true)
             ? $request->input('sort_direction')
             : 'desc';
 
         // PAGINATION
         $limit = $request->input('limit', 5);
+        $limit = is_numeric($limit) && $limit > 0 && $limit <= 100
+            ? (int) $limit
+            : 10;
 
         // NET TOTAL FILTERS
         $minNetTotal = $request->filled('min_net_total') ? (float)$request->input('min_net_total') : null;
         $maxNetTotal = $request->filled('max_net_total') ? (float)$request->input('max_net_total') : null;
+
         $netTotalBetween = $request->filled('net_total_between')
             ? array_map('floatval', explode(',', $request->input('net_total_between')))
             : null;
 
-        // DATE FILTERS
-        $startDate = $request->filled('start_date') ? $request->input('start_date') : null;
-        $endDate = $request->filled('end_date') ? $request->input('end_date') : null;
-        $dateBetween = $request->filled('date_between')
-            ? explode(',', $request->input('date_between'))
-            : null;
+        // INITIALIZE QUERY
+        $query = Voucher::with(['customer', 'voucherItems']);
 
-        // QUERY CONSTRUCTION
-        $query = Voucher::with('voucher_items')
-            ->when($searchTerm, function ($q) use ($searchTerm) {
+        $customerId = (int) $searchTerm;
+        // APPLY SEARCH FILTER
+        if ($searchTerm) {
+            $query->where(function ($q) use ($searchTerm, $customerId) {
+                $q->where('voucher_number', 'like', "%$searchTerm%")
+                    ->orWhere('customer_id', $customerId);
+            });
+        }
 
-                $enum = OrderType::tryFrom($searchTerm);
+        // DATE RANGE FILTER
+        if ($startDate && $endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        } elseif ($startDate) {
+            $query->whereDate('date', '>=', $startDate);
+        } elseif ($endDate) {
+            $query->whereDate('date', '<=', $endDate);
+        }
 
-                $q->where(function ($query) use ($searchTerm, $enum) {
-                    $query->where('id', 'like', "%{$searchTerm}%")
-                        ->orWhere('customer_id', 'like', "%{$searchTerm}%");
+        // NET TOTAL FILTER
+        if ($netTotalBetween && count($netTotalBetween) === 2) {
+            $query->whereBetween('net_total', $netTotalBetween);
+        } else {
+            if (!is_null($minNetTotal)) {
+                $query->where('net_total', '>=', $minNetTotal);
+            }
 
-                    if ($enum) {
-                        $query->orWhere('order_type', $enum);
-                    }
-                });
-            })
-            // NET TOTAL FILTERS
-            ->when($minNetTotal, fn($q) => $q->where('net_total', '>=', $minNetTotal))
-            ->when($maxNetTotal, fn($q) => $q->where('net_total', '<=', $maxNetTotal))
-            ->when($netTotalBetween, function ($q) use ($netTotalBetween) {
-                $q->whereBetween('net_total', $netTotalBetween);
-            })
-            // DATE FILTERS
-            ->when($startDate, fn($q) => $q->whereDate('date', '>=', $startDate))
-            ->when($endDate, fn($q) => $q->whereDate('date', '<=', $endDate))
-            ->when($dateBetween, function ($q) use ($dateBetween) {
-                $q->whereBetween('date', $dateBetween);
-            })
-            ->orderBy($sortBy, $sortDirection);
+            if (!is_null($maxNetTotal)) {
+                $query->where('net_total', '<=', $maxNetTotal);
+            }
+        }
 
+        // TYPE FILTER
+        if ($type && in_array($type, config("base.sale_type"))) {
+            $query->where('type', $type);
+        }
+
+        // APPLY SORTING
+        $query->orderBy($sortBy, $sortDirection);
+
+        // EXECUTE PAGINATED QUERY
         $vouchers = $query->paginate($limit);
 
-        // PRESERVE ALL FILTERS IN PAGINATION LINKS
-        $vouchers->appends([
-            'q' => $searchTerm,
-            'sort_by' => $sortBy,
-            'sort_direction' => $sortDirection,
-            'limit' => $limit,
-            'min_net_total' => $minNetTotal,
-            'max_net_total' => $maxNetTotal,
-            'net_total_between' => $request->input('net_total_between'),
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'date_between' => $request->input('date_between'),
-        ]);
+        // PRESERVE QUERY PARAMETERS
+        $vouchers->appends($request->query());
 
-        return VoucherResource::collection($vouchers);
+        return VoucherResource::collection($vouchers)
+            ->additional([
+                'message' => 'Vouchers are retrieved successfully',
+            ]);
     }
 
 
@@ -135,7 +158,8 @@ class VoucherController extends Controller
             // store voucher
             $voucher = Voucher::create([
                 'customer_id' => $request->validated()['customer_id'],
-                'date' => now()->toDateString(),
+                'voucher_number' => $request->validated()['voucher_number'],
+                'date' => $request->validated()['date'],
                 'total' => $total,
                 'tax' => $tax,
                 'net_total' => $netTotal,
@@ -157,7 +181,7 @@ class VoucherController extends Controller
             DB::commit();
 
             return response()->json([
-                "message" => "Voucher stored successfully"
+                "message" => "Voucher is stored successfully"
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -188,6 +212,15 @@ class VoucherController extends Controller
             'message' => 'Voucher is retrieved successfully',
             'data' => new VoucherDetailResource($voucher),
         ]);
+    }
+
+     //export
+    public function excelExport(Request $request)
+    {
+        return Excel::download(
+            new VoucherExport($request),
+            'vouchers.xlsx'
+        );
     }
     /**
      * Remove the specified resource from storage.

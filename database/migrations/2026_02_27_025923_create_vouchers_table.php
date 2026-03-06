@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('vouchers', function (Blueprint $table) {
             $table->id();
+            $table->string("voucher_number")->unique(); // <-- make unique
             $table->bigInteger('customer_id')->nullable();
             $table->date('date');
             $table->integer('total');
@@ -21,9 +22,9 @@ return new class extends Migration
             $table->integer('net_total');
             $table->integer('cash');
             $table->integer('change');
-            $table->integer('voucher_items_count');
+            $table->integer('voucher_items_count')->default(0);
             $table->enum('type', config('base.sale_type'));
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->bigInteger('user_id');
             $table->timestamps();
         });
     }

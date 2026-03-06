@@ -17,7 +17,10 @@ class VoucherDetailResource extends JsonResource
         return [
             'id' => $this->id,
             'customer_id' => $this->customer_id,
+            'voucher_number' => $this->voucher_number,
             'date' => $this->date,
+            'cash' => $this->cash,
+            'change' => $this->change,
             'total' => $this->total,
             'tax' => $this->tax,
             'net_total' => $this->net_total,
@@ -27,7 +30,7 @@ class VoucherDetailResource extends JsonResource
             'updated_at' => $this->updated_at,
             // 'records' => $this->records()->get(),
             // Include related records (e.g., associated products) if applicable
-            'voucher_items' => VoucherItemResource::collection($this->voucher_items()->get()),
+            'voucher_items' => VoucherItemResource::collection($this->voucherItems()->get()),
         ];
     }
 
