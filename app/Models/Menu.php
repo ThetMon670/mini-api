@@ -36,4 +36,14 @@ class Menu extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function vouchers()
+    {
+        return $this->hasMany(Voucher::class);
+    }
+
+    public function voucher_items()
+    {
+        return $this->hasMany(VoucherItem::class);
+    }
 }
