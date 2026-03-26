@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderType;
+use App\Exports\VoucherExport;
+use App\Exports\VoucherItemExport;
 use App\Models\Voucher;
 use App\Http\Requests\StoreVoucherRequest;
 use App\Http\Resources\VoucherDetailResource;
@@ -14,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class VoucherController extends Controller
 {
@@ -214,14 +217,6 @@ class VoucherController extends Controller
         ]);
     }
 
-     //export
-    public function excelExport(Request $request)
-    {
-        return Excel::download(
-            new VoucherExport($request),
-            'vouchers.xlsx'
-        );
-    }
     /**
      * Remove the specified resource from storage.
      */
@@ -242,5 +237,19 @@ class VoucherController extends Controller
         $voucher->delete();
 
         return response()->json(['message' => 'Voucher is deleted successfully.']);
+    }
+
+    public function voucherExport(Request $request)
+    {
+        return Excel::download(
+            new VoucherExport($request), 'vouchers.xlsx'
+        );
+    }
+
+    public function voucherItemExport(Request $request)
+    {
+        return Excel::download(
+            new VoucherItemExport($request), 'voucher_items.xlsx'
+        );
     }
 }

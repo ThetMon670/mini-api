@@ -32,4 +32,9 @@ class VoucherItem extends Model
     {
         return $this->belongsTo(Menu::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

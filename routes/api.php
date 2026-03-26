@@ -64,10 +64,12 @@ Route::prefix('v1')->group(function () {
 
         // Voucher items and vouchers
         Route::apiResource('items', VoucherItemController::class)->only('index');
-        Route::apiResource('vouchers', VoucherController::class)->except('update');
 
-        // Export routes
-        Route::get('export/vouchers/csv', [ExportController::class, 'exportVouchersCSV']);
-        Route::get('export/voucher-items/csv', [ExportController::class, 'exportVoucherItemsCSV']);
+         // Export routes
+        Route::get('vouchers/export', [VoucherController::class, 'voucherExport']);
+        Route::get('vouchers-items/export', [VoucherController::class, 'voucherItemExport']);
+
+        Route::apiResource('vouchers', VoucherController::class)->except('update');
+       
     });
 }); 
