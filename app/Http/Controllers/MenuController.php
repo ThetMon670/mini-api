@@ -61,7 +61,7 @@ class MenuController extends Controller
             $query->where('price', "<=", (float) $priceMax);
         }
 
-        //filtered by unit
+        //unit filtered 
         $unit = $request->input('filter_by_unit');
         if($unit) {
             $query->where('unit', $unit);
