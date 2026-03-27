@@ -60,12 +60,19 @@ class MenuController extends Controller
             $query->where('price', "<=", (float) $priceMax);
         }
 
+        //unit filtered 
+        $unit = $request->input('filter_by_unit');
+        if($unit) {
+            $query->where('unit', $unit);
+        }
+        
         //filtered by category-by-id
         $category = $request->input('filter_by_category_id');
         if($category) {
             $query->where('category_id', $category);
         }
         
+>>>>>>> 410025d66b642af53bc8acaf6c72ff5119ba05b0
         //APPLY SORTING PRODUCT
         $query->orderBy($sortBy, $sortDirection);
 
