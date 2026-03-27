@@ -41,7 +41,6 @@ class MenuController extends Controller
         // INITIALIZE QUERY WITH USER SCOPE
         $query = Menu::query()->where('user_id', Auth::id())->with('category');
 
-
         // APPLY SEARCH FILTER IF SEARCH TERM EXISTS
         if ($searchTerm) {
             $query->when($searchTerm, function ($q) use ($searchTerm) {
@@ -67,7 +66,13 @@ class MenuController extends Controller
             $query->where('unit', $unit);
         }
         
-
+        //filtered by category-by-id
+        $category = $request->input('filter_by_category_id');
+        if($category) {
+            $query->where('category_id', $category);
+        }
+        
+>>>>>>> 410025d66b642af53bc8acaf6c72ff5119ba05b0
         //APPLY SORTING PRODUCT
         $query->orderBy($sortBy, $sortDirection);
 
@@ -83,7 +88,6 @@ class MenuController extends Controller
             'price_min' => $priceMin,
             'price_max' => $priceMax,
         ]);
-
 
         return MenuResource::collection($menus)->additional(["message" => "Menus are retrieved successfully"]);
     }

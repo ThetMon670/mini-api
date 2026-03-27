@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MenuUnitsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherItemController;
@@ -60,6 +61,7 @@ Route::prefix('v1')->group(function () {
         // Categories, Menus, Images
         Route::apiResource('categories', CategoryController::class);
         Route::apiResource('menus', MenuController::class);
+        Route::get('menu-units', [MenuUnitsController::class, 'menuUnits']);
         Route::apiResource('images', ImageController::class)->only(['store', 'destroy']);
 
         // Voucher items and vouchers
