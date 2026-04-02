@@ -72,7 +72,6 @@ class MenuController extends Controller
             $query->where('category_id', $category);
         }
         
->>>>>>> 410025d66b642af53bc8acaf6c72ff5119ba05b0
         //APPLY SORTING PRODUCT
         $query->orderBy($sortBy, $sortDirection);
 
