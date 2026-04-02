@@ -790,7 +790,7 @@
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/StoreCustomerRequest"
+                                "$ref": "#/components/schemas/App.Http.Requests.StoreCustomerRequest"
                             }
                         }
                     }
@@ -801,7 +801,14 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CustomerResource"
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/CustomerResource"
+                                        },
+                                        {
+                                            "$ref": "#/components/schemas/StoreCustomerRequest"
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -2288,6 +2295,54 @@
             }
         },
         "schemas": {
+            "App.Http.Requests.StoreCustomerRequest": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 2048
+                    },
+                    "date_of_birth": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "phone"
+                ],
+                "title": "App.Http.Requests.StoreCustomerRequest"
+            },
             "CategoryResource": {
                 "type": "object",
                 "properties": {
@@ -2756,51 +2811,8 @@
                 "title": "StoreCategoryRequest"
             },
             "StoreCustomerRequest": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "maxLength": 255
-                    },
-                    "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "email"
-                    },
-                    "phone": {
-                        "type": "string"
-                    },
-                    "address": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "image": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "binary",
-                        "contentMediaType": "application/octet-stream",
-                        "maxLength": 2048
-                    },
-                    "date_of_birth": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "phone"
-                ],
+                "type": "array",
+                "items": {},
                 "title": "StoreCustomerRequest"
             },
             "StoreImageRequest": {

@@ -80,15 +80,14 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-        $data = $request->validated();
 
+        $data = $request->validated();
         // Handle image upload
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('customers', 'public');
         }
 
         $data['user_id'] = Auth::id();
-        dd($data);
 
         $customer = Customer::create($data);
 
