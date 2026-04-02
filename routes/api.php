@@ -48,6 +48,7 @@ Route::prefix('v1')->group(function () {
 
         // Customers
         Route::apiResource('customer', CustomerController::class);
+        
 
         // Profile routes
         Route::prefix('profile')->controller(ProfileController::class)->group(function () {

@@ -15,7 +15,41 @@
         }
     ],
     "paths": {
-        "/register": {
+        "/v1": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "success"
+                                            ]
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "API v1 is running"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "status",
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/register": {
             "post": {
                 "operationId": "register",
                 "tags": [
@@ -75,7 +109,7 @@
                 }
             }
         },
-        "/login": {
+        "/v1/login": {
             "post": {
                 "operationId": "login",
                 "tags": [
@@ -156,7 +190,7 @@
                 }
             }
         },
-        "/categories": {
+        "/v1/categories": {
             "get": {
                 "operationId": "categories.index",
                 "summary": "Display a listing of the resource",
@@ -392,7 +426,7 @@
                 }
             }
         },
-        "/categories/{category}": {
+        "/v1/categories/{category}": {
             "get": {
                 "operationId": "categories.show",
                 "summary": "Display the specified resource",
@@ -553,7 +587,7 @@
                 }
             }
         },
-        "/customer": {
+        "/v1/customer": {
             "get": {
                 "operationId": "customer.index",
                 "summary": "Display a listing of the resource",
@@ -754,7 +788,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/StoreCustomerRequest"
                             }
@@ -781,7 +815,7 @@
                 }
             }
         },
-        "/customer/{customer}": {
+        "/v1/customer/{customer}": {
             "get": {
                 "operationId": "customer.show",
                 "summary": "Display the specified resource",
@@ -837,7 +871,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "$ref": "#/components/schemas/UpdateCustomerRequest"
                             }
@@ -926,53 +960,7 @@
                 }
             }
         },
-        "/export/vouchers/csv": {
-            "get": {
-                "operationId": "export.exportVouchersCSV",
-                "tags": [
-                    "Export"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/export/voucher-items/csv": {
-            "get": {
-                "operationId": "export.exportVoucherItemsCSV",
-                "tags": [
-                    "Export"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/images": {
+        "/v1/images": {
             "post": {
                 "operationId": "images.store",
                 "tags": [
@@ -1035,7 +1023,7 @@
                 }
             }
         },
-        "/images/{path}": {
+        "/v1/images/{path}": {
             "delete": {
                 "operationId": "images.destroy",
                 "tags": [
@@ -1091,7 +1079,7 @@
                 }
             }
         },
-        "/menus": {
+        "/v1/menus": {
             "get": {
                 "operationId": "menus.index",
                 "tags": [
@@ -1142,6 +1130,22 @@
                         "schema": {
                             "type": "string",
                             "default": 5
+                        }
+                    },
+                    {
+                        "name": "filter_by_unit",
+                        "in": "query",
+                        "description": "unit filtered",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "filter_by_category_id",
+                        "in": "query",
+                        "description": "filtered by category-by-id",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 ],
@@ -1340,7 +1344,7 @@
                 }
             }
         },
-        "/menus/{menu}": {
+        "/v1/menus/{menu}": {
             "get": {
                 "operationId": "menus.show",
                 "tags": [
@@ -1490,7 +1494,45 @@
                 }
             }
         },
-        "/profile/logout": {
+        "/v1/menu-units": {
+            "get": {
+                "operationId": "menuUnits.menuUnits",
+                "tags": [
+                    "MenuUnits"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Menu units are retrieved successfully"
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/MenuUnitsResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/profile/logout": {
             "post": {
                 "operationId": "profile.logout",
                 "summary": "Log the user out",
@@ -1537,7 +1579,7 @@
                 }
             }
         },
-        "/profile/change-name": {
+        "/v1/profile/change-name": {
             "post": {
                 "operationId": "profile.changeName",
                 "summary": "Change name",
@@ -1597,7 +1639,7 @@
                 }
             }
         },
-        "/profile/change-password": {
+        "/v1/profile/change-password": {
             "post": {
                 "operationId": "profile.changePassword",
                 "summary": "Change password",
@@ -1657,7 +1699,7 @@
                 }
             }
         },
-        "/profile/change-profile-image": {
+        "/v1/profile/change-profile-image": {
             "post": {
                 "operationId": "profile.changeProfileImage",
                 "summary": "Change profile image",
@@ -1717,7 +1759,7 @@
                 }
             }
         },
-        "/profile/show": {
+        "/v1/profile/show": {
             "get": {
                 "operationId": "profile.show",
                 "summary": "Get user profile",
@@ -1764,7 +1806,53 @@
                 }
             }
         },
-        "/vouchers": {
+        "/v1/vouchers/export": {
+            "get": {
+                "operationId": "voucher.voucherExport",
+                "tags": [
+                    "Voucher"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/vouchers-items/export": {
+            "get": {
+                "operationId": "voucher.voucherItemExport",
+                "tags": [
+                    "Voucher"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/vouchers": {
             "get": {
                 "operationId": "vouchers.index",
                 "summary": "Display a listing of the resource",
@@ -2033,7 +2121,7 @@
                 }
             }
         },
-        "/vouchers/{id}": {
+        "/v1/vouchers/{id}": {
             "get": {
                 "operationId": "vouchers.show",
                 "summary": "Display the specified resource",
@@ -2167,7 +2255,7 @@
                 }
             }
         },
-        "/items": {
+        "/v1/items": {
             "get": {
                 "operationId": "items.index",
                 "summary": "Display a listing of the resource",
@@ -2327,6 +2415,12 @@
                             "null"
                         ]
                     },
+                    "image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
                     "user_id": {
                         "type": "integer"
                     },
@@ -2355,6 +2449,7 @@
                     "phone",
                     "address",
                     "date_of_birth",
+                    "image",
                     "user_id",
                     "created_at",
                     "updated_at"
@@ -2394,6 +2489,12 @@
                                             "null"
                                         ]
                                     },
+                                    "image": {
+                                        "type": [
+                                            "string",
+                                            "null"
+                                        ]
+                                    },
                                     "date_of_birth": {
                                         "type": [
                                             "string",
@@ -2424,6 +2525,7 @@
                                     "email",
                                     "phone",
                                     "address",
+                                    "image",
                                     "date_of_birth",
                                     "created_at",
                                     "updated_at",
@@ -2477,6 +2579,9 @@
                     "category_id": {
                         "type": "integer"
                     },
+                    "unit": {
+                        "type": "string"
+                    },
                     "price": {
                         "type": "integer"
                     },
@@ -2506,6 +2611,7 @@
                     "title",
                     "slug",
                     "category_id",
+                    "unit",
                     "price",
                     "image",
                     "user_id",
@@ -2569,6 +2675,11 @@
                     "owner"
                 ],
                 "title": "MenuResource"
+            },
+            "MenuUnitsResource": {
+                "type": "object",
+                "additionalProperties": {},
+                "title": "MenuUnitsResource"
             },
             "ProfileResource": {
                 "type": "object",
@@ -2670,6 +2781,15 @@
                             "null"
                         ]
                     },
+                    "image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 2048
+                    },
                     "date_of_birth": {
                         "type": [
                             "string",
@@ -2705,6 +2825,10 @@
                         "type": "string",
                         "maxLength": 255
                     },
+                    "unit": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
                     "price": {
                         "type": "integer",
                         "minimum": 0
@@ -2722,6 +2846,7 @@
                 },
                 "required": [
                     "title",
+                    "unit",
                     "price",
                     "category_id",
                     "image"
@@ -2829,6 +2954,15 @@
                             "null"
                         ]
                     },
+                    "image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 2048
+                    },
                     "date_of_birth": {
                         "type": [
                             "string",
@@ -2843,6 +2977,10 @@
                 "type": "object",
                 "properties": {
                     "title": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "unit": {
                         "type": "string",
                         "maxLength": 255
                     },

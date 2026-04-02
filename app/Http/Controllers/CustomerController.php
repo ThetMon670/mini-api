@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;  // Correct use of Auth facade
 use Illuminate\Support\Facades\Gate as FacadesGate;
+use SebastianBergmann\Environment\Console;
 
 class CustomerController extends Controller
 {
@@ -19,7 +20,7 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request) 
+    public function index(Request $request)
     {
         // GET SEARCH PARAMETERS
         $searchTerm = $request->input('q');
@@ -79,10 +80,17 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-       $customer = Customer::create([
-            ...$request->validated(),
-            'user_id' => Auth::id(),  // Corrected from AuthController::id() to Auth::id()
-        ]);
+        $data = $request->validated();
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('customers', 'public');
+        }
+
+        $data['user_id'] = Auth::id();
+        dd($data);
+
+        $customer = Customer::create($data);
 
         return new CustomerResource($customer, 'Customers are created successfully');
     }
@@ -100,7 +108,14 @@ class CustomerController extends Controller
      */
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-        $customer->update($request->validated());
+       $data = $request->validated();
+
+        // image optional for update
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('customers', 'public');
+        }
+        $customer->update($data);
+
         return new CustomerResource($customer, 'Customers are updated successfully');
     }
 

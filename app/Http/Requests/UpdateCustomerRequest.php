@@ -20,8 +20,9 @@ class UpdateCustomerRequest extends FormRequest
 
             'phone' => 'nullable|string|unique:customers,phone,' . $this->route('customer'),
 
+
             'address' => 'nullable|string',
-            'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image' => ['nullable', 'file', 'image', 'max:2048'],
 
             'date_of_birth' => 'nullable|date|before_or_equal:' . now()->subYears(18)->toDateString(),
         ];
