@@ -35,12 +35,5 @@ class MenuResource extends JsonResource
      * @param \Illuminate\Http\Response $response
      * @return void
      */
-    public function withResponse($request, $response)
-    {
-        // Customize the response message if needed
-        $response->setData([
-            'message' => 'Menu fetched successfully',  // Custom message
-            'data' => $response->getData(),  // Wrap the original data in 'data'
-        ]);
-    }
+    
 }

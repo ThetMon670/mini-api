@@ -14,13 +14,11 @@ class StoreMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required','string','max:255'],
+            'title' => 'required|string|max:255',
             'unit' => 'required|string|max:255',
-            'price' => ['required','integer','min:0'],
+            'price' => 'required|numeric|min:0',
+            'image' => 'nullable|string',
             'category_id' => 'required|integer|exists:categories,id',
-
-            // required on store
-            'image' => ['required','file','image','max:2048'],
         ];
     }
 }

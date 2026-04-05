@@ -80,18 +80,13 @@ class CustomerController extends Controller
      */
     public function store(StoreCustomerRequest $request)
     {
-
-        $data = $request->validated();
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('customers', 'public');
-        }
-
-        $data['user_id'] = Auth::id();
-
-        $customer = Customer::create($data);
-
-        return new CustomerResource($customer, 'Customers are created successfully');
+        $customerData = [...$request->validated(), 'user_id' => auth()->user()->id];
+        $customer = Customer::create($customerData);
+        return response()->json(
+            ["message" => "Customer is created successfully", 
+            "data"=> new CustomerResource($customer)]
+        );
+        
     }
 
     /**
@@ -99,7 +94,10 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer)
     {
-        return new CustomerResource($customer, 'Customers are retrieved successfully');
+        return response()->json([
+            'message' => 'Customer retrieved successfully',
+            'data' => new CustomerResource($customer)
+        ]);
     }
 
     /**
@@ -107,15 +105,11 @@ class CustomerController extends Controller
      */
     public function update(UpdateCustomerRequest $request, Customer $customer)
     {
-       $data = $request->validated();
-
-        // image optional for update
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('customers', 'public');
-        }
-        $customer->update($data);
-
-        return new CustomerResource($customer, 'Customers are updated successfully');
+        $customer->update($request->validated());
+        return response()->json([
+            'message' => 'Customer is updated successfully',
+            'data' => new CustomerResource($customer)
+        ]);
     }
 
     /**

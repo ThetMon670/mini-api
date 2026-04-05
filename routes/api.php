@@ -7,6 +7,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MenuUnitsController;
+use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\VoucherItemController;
@@ -48,7 +49,7 @@ Route::prefix('v1')->group(function () {
 
         // Customers
         Route::apiResource('customer', CustomerController::class);
-        
+
 
         // Profile routes
         Route::prefix('profile')->controller(ProfileController::class)->group(function () {
@@ -63,16 +64,14 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('categories', CategoryController::class);
         Route::apiResource('menus', MenuController::class);
         Route::get('menu-units', [MenuUnitsController::class, 'menuUnits']);
-        Route::apiResource('images', ImageController::class)->only(['store', 'destroy']);
-
+        Route::apiResource("photos", PhotoController::class)->only(["store", "destroy"]);
         // Voucher items and vouchers
         Route::apiResource('items', VoucherItemController::class)->only('index');
 
-         // Export routes
+        // Export routes
         Route::get('vouchers/export', [VoucherController::class, 'voucherExport']);
         Route::get('vouchers-items/export', [VoucherController::class, 'voucherItemExport']);
 
         Route::apiResource('vouchers', VoucherController::class)->except('update');
-       
     });
-}); 
+});

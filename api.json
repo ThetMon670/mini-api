@@ -790,24 +790,32 @@
                     "content": {
                         "multipart/form-data": {
                             "schema": {
-                                "$ref": "#/components/schemas/App.Http.Requests.StoreCustomerRequest"
+                                "$ref": "#/components/schemas/StoreCustomerRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "`CustomerResource`",
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "anyOf": [
-                                        {
-                                            "$ref": "#/components/schemas/CustomerResource"
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Customer is created successfully"
+                                            ]
                                         },
-                                        {
-                                            "$ref": "#/components/schemas/StoreCustomerRequest"
+                                        "data": {
+                                            "$ref": "#/components/schemas/CustomerResource"
                                         }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
                                     ]
                                 }
                             }
@@ -842,11 +850,26 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`CustomerResource`",
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CustomerResource"
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Customer retrieved successfully"
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/CustomerResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
                                 }
                             }
                         }
@@ -887,11 +910,26 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "`CustomerResource`",
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/CustomerResource"
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Customer is updated successfully"
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/CustomerResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
                                 }
                             }
                         }
@@ -994,23 +1032,11 @@
                                         "message": {
                                             "type": "string",
                                             "enum": [
-                                                "Medias are upload successfully"
+                                                "Photo is stored successfully"
                                             ]
                                         },
                                         "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "path": {
-                                                    "type": "string"
-                                                },
-                                                "url": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "path",
-                                                "url"
-                                            ]
+                                            "$ref": "#/components/schemas/ImageResource"
                                         }
                                     },
                                     "required": [
@@ -1030,7 +1056,7 @@
                 }
             }
         },
-        "/v1/images/{path}": {
+        "/v1/images/{url}": {
             "delete": {
                 "operationId": "images.destroy",
                 "tags": [
@@ -1038,7 +1064,7 @@
                 ],
                 "parameters": [
                     {
-                        "name": "path",
+                        "name": "url",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -1054,27 +1080,15 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "data": {
-                                            "type": "object",
-                                            "properties": {
-                                                "success": {
-                                                    "type": "null"
-                                                },
-                                                "message": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "Media upload successfully"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "success",
-                                                "message"
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Photo is deleted successfully"
                                             ]
                                         }
                                     },
                                     "required": [
-                                        "data"
+                                        "message"
                                     ]
                                 }
                             }
@@ -1316,7 +1330,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/StoreMenuRequest"
                             }
@@ -1325,18 +1339,40 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "`MenuResource`",
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/components/schemas/MenuResource"
+                                    "anyOf": [
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "message": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "Menu is created successfully"
+                                                    ]
+                                                },
+                                                "data": {
+                                                    "$ref": "#/components/schemas/MenuResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "message",
+                                                "data"
+                                            ]
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "data": {
+                                                    "$ref": "#/components/schemas/MenuResource"
+                                                }
+                                            },
+                                            "required": [
+                                                "data"
+                                            ]
                                         }
-                                    },
-                                    "required": [
-                                        "data"
                                     ]
                                 }
                             }
@@ -1370,17 +1406,24 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "`MenuResource`",
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Menus are retrieved successfully"
+                                            ]
+                                        },
                                         "data": {
                                             "$ref": "#/components/schemas/MenuResource"
                                         }
                                     },
                                     "required": [
+                                        "message",
                                         "data"
                                     ]
                                 }
@@ -1413,7 +1456,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/UpdateMenuRequest"
                             }
@@ -1422,17 +1465,24 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "`MenuResource`",
+                        "description": "",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Menu updated successfully"
+                                            ]
+                                        },
                                         "data": {
                                             "$ref": "#/components/schemas/MenuResource"
                                         }
                                     },
                                     "required": [
+                                        "message",
                                         "data"
                                     ]
                                 }
@@ -1480,7 +1530,7 @@
                                         "message": {
                                             "type": "string",
                                             "enum": [
-                                                "Menus are deleted successfully"
+                                                "Menu is deleted successfully"
                                             ]
                                         }
                                     },
@@ -2295,54 +2345,6 @@
             }
         },
         "schemas": {
-            "App.Http.Requests.StoreCustomerRequest": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "maxLength": 255
-                    },
-                    "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "email"
-                    },
-                    "phone": {
-                        "type": "string"
-                    },
-                    "address": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "image": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "binary",
-                        "contentMediaType": "application/octet-stream",
-                        "maxLength": 2048
-                    },
-                    "date_of_birth": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "phone"
-                ],
-                "title": "App.Http.Requests.StoreCustomerRequest"
-            },
             "CategoryResource": {
                 "type": "object",
                 "properties": {
@@ -2602,6 +2604,42 @@
                 ],
                 "title": "CustomerResource"
             },
+            "ImageResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "file_name": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "url",
+                    "file_name",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "ImageResource"
+            },
             "LoginRequest": {
                 "type": "object",
                 "properties": {
@@ -2641,7 +2679,10 @@
                         "type": "integer"
                     },
                     "image": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "user_id": {
                         "type": "integer"
@@ -2694,7 +2735,10 @@
                         "type": "integer"
                     },
                     "image": {
-                        "type": "string"
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "user_id": {
                         "type": "integer"
@@ -2811,8 +2855,51 @@
                 "title": "StoreCategoryRequest"
             },
             "StoreCustomerRequest": {
-                "type": "array",
-                "items": {},
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "maxLength": 255
+                    },
+                    "email": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "email"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "address": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
+                    },
+                    "image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "binary",
+                        "contentMediaType": "application/octet-stream",
+                        "maxLength": 2048
+                    },
+                    "date_of_birth": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "phone"
+                ],
                 "title": "StoreCustomerRequest"
             },
             "StoreImageRequest": {
@@ -2842,26 +2929,24 @@
                         "maxLength": 255
                     },
                     "price": {
-                        "type": "integer",
+                        "type": "number",
                         "minimum": 0
+                    },
+                    "image": {
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     },
                     "category_id": {
                         "type": "integer"
-                    },
-                    "image": {
-                        "type": "string",
-                        "format": "binary",
-                        "contentMediaType": "application/octet-stream",
-                        "description": "required on store",
-                        "maxLength": 2048
                     }
                 },
                 "required": [
                     "title",
                     "unit",
                     "price",
-                    "category_id",
-                    "image"
+                    "category_id"
                 ],
                 "title": "StoreMenuRequest"
             },
@@ -2997,20 +3082,17 @@
                         "maxLength": 255
                     },
                     "price": {
-                        "type": "integer",
+                        "type": "number",
                         "minimum": 0
                     },
                     "category_id": {
-                        "type": [
-                            "integer",
-                            "null"
-                        ]
+                        "type": "integer"
                     },
                     "image": {
-                        "type": "string",
-                        "format": "binary",
-                        "contentMediaType": "application/octet-stream",
-                        "maxLength": 2048
+                        "type": [
+                            "string",
+                            "null"
+                        ]
                     }
                 },
                 "title": "UpdateMenuRequest"

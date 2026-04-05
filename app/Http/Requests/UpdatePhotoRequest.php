@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateMenuRequest extends FormRequest
+class UpdatePhotoRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,11 +22,7 @@ class UpdateMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'sometimes|string|max:255',
-            'unit' => 'sometimes|string|max:255',
-            'price' => 'sometimes|numeric|min:0',
-            'category_id' => 'sometimes|integer|exists:categories,id',
-            'image' => 'nullable|string'
+            //
         ];
     }
 }

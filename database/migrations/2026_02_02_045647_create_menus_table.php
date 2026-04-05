@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained()->onDelete('cascade'); // Foreign key to category
             $table->string('unit');
             $table->integer('price'); // Price of the menu item
-            $table->string('image');
+            $table->text('image')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Foreign key to user
             $table->timestamps();
         });
