@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->text('address')->nullable();
             $table->date('date_of_birth')->nullable(); // Changed from text to 
-            $table->string('image')->nullable();
+            $table->text('image')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); 
             $table->timestamps();
         });

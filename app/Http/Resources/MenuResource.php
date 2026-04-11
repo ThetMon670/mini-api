@@ -3,6 +3,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Database\Eloquent\Attributes\UseResource;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class MenuResource extends JsonResource
 {
@@ -20,7 +21,7 @@ class MenuResource extends JsonResource
             'slug' => $this->slug,
             'category_id' => $this->category_id,
             'price' => $this->price,
-            'image' => $this->image,
+            'image' => $this->image ? asset(Storage::url($this->image)) : config("base.image_placeholder"),
             'user_id' => $this->user_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

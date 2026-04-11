@@ -1005,101 +1005,6 @@
                 }
             }
         },
-        "/v1/images": {
-            "post": {
-                "operationId": "images.store",
-                "tags": [
-                    "Image"
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "$ref": "#/components/schemas/StoreImageRequest"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "enum": [
-                                                "Photo is stored successfully"
-                                            ]
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/ImageResource"
-                                        }
-                                    },
-                                    "required": [
-                                        "message",
-                                        "data"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
-                    }
-                }
-            }
-        },
-        "/v1/images/{url}": {
-            "delete": {
-                "operationId": "images.destroy",
-                "tags": [
-                    "Image"
-                ],
-                "parameters": [
-                    {
-                        "name": "url",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "enum": [
-                                                "Photo is deleted successfully"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
         "/v1/menus": {
             "get": {
                 "operationId": "menus.index",
@@ -1327,16 +1232,6 @@
                 "tags": [
                     "Menu"
                 ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/StoreMenuRequest"
-                            }
-                        }
-                    }
-                },
                 "responses": {
                     "200": {
                         "description": "",
@@ -1366,7 +1261,8 @@
                                             "type": "object",
                                             "properties": {
                                                 "data": {
-                                                    "$ref": "#/components/schemas/MenuResource"
+                                                    "type": "array",
+                                                    "items": {}
                                                 }
                                             },
                                             "required": [
@@ -1380,9 +1276,6 @@
                     },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
-                    },
-                    "422": {
-                        "$ref": "#/components/responses/ValidationException"
                     }
                 }
             }
@@ -1578,6 +1471,103 @@
                                     "required": [
                                         "message",
                                         "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    }
+                }
+            }
+        },
+        "/v1/photos": {
+            "post": {
+                "operationId": "photos.store",
+                "summary": "Store a newly created resource in storage",
+                "tags": [
+                    "Photo"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StorePhotoRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Photo stored successfully"
+                                            ]
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/PhotoResource"
+                                        }
+                                    },
+                                    "required": [
+                                        "message",
+                                        "data"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/AuthenticationException"
+                    },
+                    "422": {
+                        "$ref": "#/components/responses/ValidationException"
+                    }
+                }
+            }
+        },
+        "/v1/photos/{url}": {
+            "delete": {
+                "operationId": "photos.destroy",
+                "summary": "Remove the specified resource from storage",
+                "tags": [
+                    "Photo"
+                ],
+                "parameters": [
+                    {
+                        "name": "url",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Photo deleted successfully"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
                                     ]
                                 }
                             }
@@ -2547,10 +2537,7 @@
                                         ]
                                     },
                                     "image": {
-                                        "type": [
-                                            "string",
-                                            "null"
-                                        ]
+                                        "type": "string"
                                     },
                                     "date_of_birth": {
                                         "type": [
@@ -2603,42 +2590,6 @@
                     "data"
                 ],
                 "title": "CustomerResource"
-            },
-            "ImageResource": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "url": {
-                        "type": "string"
-                    },
-                    "file_name": {
-                        "type": "string"
-                    },
-                    "created_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
-                    }
-                },
-                "required": [
-                    "id",
-                    "url",
-                    "file_name",
-                    "created_at",
-                    "updated_at"
-                ],
-                "title": "ImageResource"
             },
             "LoginRequest": {
                 "type": "object",
@@ -2735,10 +2686,7 @@
                         "type": "integer"
                     },
                     "image": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                        "type": "string"
                     },
                     "user_id": {
                         "type": "integer"
@@ -2779,6 +2727,42 @@
                 "type": "object",
                 "additionalProperties": {},
                 "title": "MenuUnitsResource"
+            },
+            "PhotoResource": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "url": {
+                        "type": "string"
+                    },
+                    "file_name": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "url",
+                    "file_name",
+                    "created_at",
+                    "updated_at"
+                ],
+                "title": "PhotoResource"
             },
             "ProfileResource": {
                 "type": "object",
@@ -2902,53 +2886,19 @@
                 ],
                 "title": "StoreCustomerRequest"
             },
-            "StoreImageRequest": {
+            "StorePhotoRequest": {
                 "type": "object",
                 "properties": {
                     "image": {
                         "type": "string",
                         "format": "binary",
-                        "contentMediaType": "application/octet-stream",
-                        "maxLength": 4096
+                        "contentMediaType": "application/octet-stream"
                     }
                 },
                 "required": [
                     "image"
                 ],
-                "title": "StoreImageRequest"
-            },
-            "StoreMenuRequest": {
-                "type": "object",
-                "properties": {
-                    "title": {
-                        "type": "string",
-                        "maxLength": 255
-                    },
-                    "unit": {
-                        "type": "string",
-                        "maxLength": 255
-                    },
-                    "price": {
-                        "type": "number",
-                        "minimum": 0
-                    },
-                    "image": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "category_id": {
-                        "type": "integer"
-                    }
-                },
-                "required": [
-                    "title",
-                    "unit",
-                    "price",
-                    "category_id"
-                ],
-                "title": "StoreMenuRequest"
+                "title": "StorePhotoRequest"
             },
             "StoreVoucherRequest": {
                 "type": "object",
