@@ -9,7 +9,5 @@ class Photo extends Model
 {
     /** @use HasFactory<\Database\Factories\PhotoFactory> */
     use HasFactory;
-    protected $fillable = [
-        'url'
-    ];
+    protected $fillable = ["url"];
 }
