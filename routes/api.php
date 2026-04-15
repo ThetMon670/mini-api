@@ -65,13 +65,10 @@ Route::prefix('v1')->group(function () {
         Route::apiResource('menus', MenuController::class);
         Route::get('menu-units', [MenuUnitsController::class, 'menuUnits']);
         Route::apiResource("photos", PhotoController::class)->only(["store", "destroy"]);
-        // Voucher items and vouchers
-        Route::apiResource('items', VoucherItemController::class)->only('index');
 
-        // Export routes
         Route::get('vouchers/export', [VoucherController::class, 'voucherExport']);
-        Route::get('vouchers-items/export', [VoucherController::class, 'voucherItemExport']);
+        Route::get('/voucher-items/export', [VoucherController::class, 'voucherItemExport']);
 
-        Route::apiResource('vouchers', VoucherController::class)->except('update');
+        Route::apiResource('vouchers', VoucherController::class)->only(['index', 'store', 'show']);
     });
 });

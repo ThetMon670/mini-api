@@ -13,13 +13,14 @@ class UpdateCustomerRequest extends FormRequest
 
     public function rules(): array
     {
+         $customerId = $this->route('customer')?->id;
         return [
-            'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email',
-            'phone' => 'nullable|string|unique:customers,phone,' . $this->route('customer'),
-            'address' => 'nullable|string',
-            'image' => ['nullable', 'file', 'image', 'max:2048'],
-            'date_of_birth' => 'nullable|date|before_or_equal:' . now()->subYears(18)->toDateString(),
+            "name" => "sometimes|string|max:255",
+            "email" => "sometimes|email",
+            "phone" => "sometimes|string|max:255|unique:customers,phone,$customerId",
+            "address" => "sometimes|string",
+            "date_of_birth" => "sometimes|date",
+            "image" => "nullable|string"
         ];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\OrderType;
 use App\Exports\VoucherExport;
 use App\Exports\VoucherItemExport;
 use App\Models\Voucher;
@@ -124,8 +123,6 @@ class VoucherController extends Controller
             ]);
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      */
@@ -242,14 +239,18 @@ class VoucherController extends Controller
     public function voucherExport(Request $request)
     {
         return Excel::download(
-            new VoucherExport($request), 'vouchers.xlsx'
+            new VoucherExport($request),
+            'vouchers.xlsx'
         );
+        
     }
+
 
     public function voucherItemExport(Request $request)
     {
         return Excel::download(
-            new VoucherItemExport($request), 'voucher_items.xlsx'
+            new VoucherItemExport($request),
+            'voucher_items.xlsx'
         );
     }
 }

@@ -40,7 +40,7 @@ class VoucherExport implements FromCollection, WithHeadings
             ? $this->request->input('sort_direction')
             : 'desc';
 
-        $query = Voucher::with(['customer', 'voucherItems']);
+        $query = Voucher::with(['voucherItems']);
 
         // SEARCH
         if ($searchTerm) {
@@ -92,4 +92,5 @@ class VoucherExport implements FromCollection, WithHeadings
             'Created At'
         ];
     }
+    
 }

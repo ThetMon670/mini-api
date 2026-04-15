@@ -16,8 +16,24 @@ class PhotoController extends Controller
      */
     public function store(StorePhotoRequest $request)
     {
-        $url = Storage::put("/", $request->file('image'));
-        $photo = Photo::create(["url" => $url]);
+        if (!$request->hasFile('image')) {
+            return response([
+                "message" => "No file uploaded"
+            ], 400);
+        }
+
+        $path = Storage::disk('s3')->put('photos', $request->file('image'));
+
+        if (!$path) {
+            return response([
+                "message" => "Upload failed (check MinIO or config)"
+            ], 500);
+        }
+
+        $photo = Photo::create([
+            "url" => $path
+        ]);
+
         return response([
             "message" => "Photo stored successfully",
             "data" => new PhotoResource($photo)

@@ -788,7 +788,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/StoreCustomerRequest"
                             }
@@ -901,7 +901,7 @@
                 ],
                 "requestBody": {
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
                                 "$ref": "#/components/schemas/UpdateCustomerRequest"
                             }
@@ -1525,6 +1525,48 @@
                             }
                         }
                     },
+                    "500": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "Upload failed (check MinIO or config)"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "enum": [
+                                                "No file uploaded"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ]
+                                }
+                            }
+                        }
+                    },
                     "401": {
                         "$ref": "#/components/responses/AuthenticationException"
                     },
@@ -1876,7 +1918,7 @@
                 }
             }
         },
-        "/v1/vouchers-items/export": {
+        "/v1/voucher-items/export": {
             "get": {
                 "operationId": "voucher.voucherItemExport",
                 "tags": [
@@ -2228,94 +2270,6 @@
                                     "required": [
                                         "message"
                                     ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            },
-            "delete": {
-                "operationId": "vouchers.destroy",
-                "summary": "Remove the specified resource from storage",
-                "tags": [
-                    "Voucher"
-                ],
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "enum": [
-                                                "Voucher is deleted successfully."
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "enum": [
-                                                "Invalid Voucher ID"
-                                            ]
-                                        }
-                                    },
-                                    "required": [
-                                        "message"
-                                    ]
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/AuthenticationException"
-                    }
-                }
-            }
-        },
-        "/v1/items": {
-            "get": {
-                "operationId": "items.index",
-                "summary": "Display a listing of the resource",
-                "tags": [
-                    "VoucherItem"
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "string"
                                 }
                             }
                         }
@@ -2864,25 +2818,20 @@
                             "null"
                         ]
                     },
+                    "date_of_birth": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
                     "image": {
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "binary",
-                        "contentMediaType": "application/octet-stream",
-                        "maxLength": 2048
-                    },
-                    "date_of_birth": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     }
                 },
                 "required": [
-                    "phone"
+                    "phone",
+                    "date_of_birth"
                 ],
                 "title": "StoreCustomerRequest"
             },
@@ -2976,46 +2925,29 @@
                 "type": "object",
                 "properties": {
                     "name": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "maxLength": 255
                     },
                     "email": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
+                        "type": "string",
                         "format": "email"
                     },
                     "phone": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                        "type": "string",
+                        "maxLength": 255
                     },
                     "address": {
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                        "type": "string"
+                    },
+                    "date_of_birth": {
+                        "type": "string",
+                        "format": "date-time"
                     },
                     "image": {
                         "type": [
                             "string",
                             "null"
-                        ],
-                        "format": "binary",
-                        "contentMediaType": "application/octet-stream",
-                        "maxLength": 2048
-                    },
-                    "date_of_birth": {
-                        "type": [
-                            "string",
-                            "null"
-                        ],
-                        "format": "date-time"
+                        ]
                     }
                 },
                 "title": "UpdateCustomerRequest"
